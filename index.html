@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <title>Weather App</title>
+  <style>
+  body {
+    background-image: url('https://cdn.pixabay.com/photo/2018/08/23/07/35/new-year-background-3625405_1280.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    backdrop-filter: brightness(0.9);
+  }
+
+  .weather-container {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 40px 20px;
+    border-radius: 20px;
+    margin-top: 80px;
+    margin-bottom: 60px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .weather-card {
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+
+  .weather-card:hover {
+    background-color: #62b3f7;
+    transform: translateY(-5px);
+  }
+
+  .form-control {
+    margin-right: 10px;
+    padding: 12px;
+  }
+
+  .btn-success {
+    padding: 12px 20px;
+    white-space: nowrap;
+  }
+
+  .btn-success:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+  }
+
+  h1 {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+  }
+
+  .list-group-item {
+    font-weight: 500;
+    font-size: 14px;
+    background: transparent;
+    padding: 12px;
+  }
+
+  /* Floating Action Button */
+  .fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 16px;
+    font-size: 24px;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+  }
+
+  .fab.rotating {
+    animation: rotate 1s infinite linear;
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Forecast Cards */
+  .forecast-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .forecast-card {
+    flex: 1 1 calc(20% - 20px);
+    min-width: 130px;
+    max-width: 160px;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 20px 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+  }
+
+  .forecast-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .forecast-card img {
+    max-width: 60px;
+    margin: 10px 0;
+  }
+
+  .forecast-card h6 {
+    font-size: 18px;
+    margin: 10px 0 6px;
+    font-weight: bold;
+  }
+
+  .forecast-card p {
+    font-size: 14px;
+    margin: 4px 0;
+    color: #f0f0f0;
+  }
+
+  /* Responsive */
+  @media (max-width: 992px) {
+    .forecast-card {
+      flex: 1 1 calc(33.33% - 20px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .weather-container {
+      padding: 30px 20px;
+    }
+
+    .form-control {
+      margin-right: 5px;
+    }
+
+    .btn-success {
+      padding: 10px 15px;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .fab {
+      bottom: 20px;
+      right: 20px;
+    }
+
+    .forecast-card {
+      flex: 1 1 calc(50% - 20px);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .weather-container {
+      margin-top: 40px;
+    }
+
+    .form-control {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+
+    .forecast-container {
+      flex-direction: column;
+    }
+
+    .forecast-card {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+
+    .btn-success {
+      padding: 10px 15px;
+      width: 100%;
+    }
+
+    .fab {
+      bottom: 10px;
+      right: 10px;
+    }
+  }
+</style>
+
+</head>
+
+<body>
+  <div class="container d-flex justify-content-center">
+    <div class="col-md-8 weather-container">
+      <h1 class="text-center mb-5">
+        <i class="fas fa-cloud-sun-rain me-3 text-primary"></i> Weather Info
+      </h1>
+
+      <div class="d-flex mb-4">
+        <input type="text" placeholder="Enter city name" class="form-control" id="city" />
+        <input type="button" value="Search" class="btn btn-success" onclick="search()" />
+      </div>
+
+      <div id="result_container" class="d-flex justify-content-center align-items-center"></div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-info" onclick="getLocation()">
+          Use My Location
+        </button>
+      </div>
+
+      <!-- Today's hourly forecast container -->
+<div id="hourly_forecast_container" class="mt-4"></div>
+
+<!-- 5-day forecast container -->
+<div id="five_day_forecast_container" class="mt-4"></div>
+
+    </div>
+  </div>
+
+<button class="btn btn-primary rounded-circle fab" onclick="refresh()">
+  <i class="fas fa-sync"></i>
+</button>
+
+  <script>
+    const API_KEY = "8e21e00b9bc53215038bd9c1741b2a65";
+
+    const search = async () => {
+      const cityInput = document.getElementById("city");
+      const cityName = cityInput.value.trim();
+      const result_container = document.getElementById("result_container");
+
+      if (cityName) {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          displayWeather(data);
+          displayForecast(data);
+        } else {
+          result_container.innerHTML = `<div class="text-white bg-danger p-3 rounded">City not found. Please try again.</div>`;
+        }
+      } else {
+        alert("Please enter a city name.");
+      }
+    };
+
+
+    const refresh = async () => {
+  const refreshButton = document.querySelector(".fab");
+  refreshButton.classList.add("rotating"); // Add rotation class
+
+  // Wait for the rotation animation to complete before fetching data
+  setTimeout(async () => {
+    refreshButton.classList.remove("rotating"); // Remove rotation class after 1 second
+
+    // Check if the user has entered a city name
+    const cityInput = document.getElementById("city");
+    const cityName = cityInput.value.trim();
+
+    if (cityName) {
+      // Fetch the weather data for the entered city
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("New weather data fetched", data); // <-- confirm refresh
+        displayWeather(data);
+        displayForecast(data);
+      } else {
+        const result_container = document.getElementById("result_container");
+        result_container.innerHTML = `<div class="text-white bg-danger p-3 rounded">City not found. Please try again.</div>`;
+      }
+    } else {
+      // If no city is entered, fetch weather for current location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            displayWeather(data);
+            displayForecast(data);
+          } else {
+            const result_container = document.getElementById("result_container");
+            result_container.innerHTML = `<div class="text-white bg-danger p-3 rounded">Unable to fetch weather for your location. Please try again.</div>`;
+          }
+        });
+      } else {
+        const result_container = document.getElementById("result_container");
+        result_container.innerHTML = `<div class="text-white bg-danger p-3 rounded">Geolocation is not supported by this browser.</div>`;
+      }
+    }
+  }, 1000);
+};
+
+
+    
+
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            displayWeather(data);
+            displayForecast(data);
+          }
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    };
+
+   const displayWeather = (data) => {
+  const result_container = document.getElementById("result_container");
+  const weather = data.list[0];
+  const city = data.city.name;
+  const country = data.city.country;
+  const icon = weather.weather[0].icon;
+
+  // Display current weather
+  result_container.innerHTML = ` 
+    <div class="card weather-card p-4">
+      <div class="card-body text-center p-3">
+        <h5 class="card-title mb-3">${city}, ${country}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">${new Date().toLocaleDateString()}</h6> <!-- Today's Date -->
+        <h6 class="card-subtitle mb-2 text-muted">Temperature: ${(weather.main.temp - 273.15).toFixed(2)}°C</h6>
+        <p class="card-text text-muted">${weather.weather[0].description}</p>
+        <img src="https://openweathermap.org/img/wn/${icon}.png" alt="icon" />
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Min Temp: ${(weather.main.temp_min - 273.15).toFixed(2)}°C</li>
+        <li class="list-group-item">Max Temp: ${(weather.main.temp_max - 273.15).toFixed(2)}°C</li>
+        <li class="list-group-item">Humidity: ${weather.main.humidity}%</li>
+        <li class="list-group-item">Pressure: ${weather.main.pressure} hPa</li>
+        <li class="list-group-item">Wind Speed: ${weather.wind.speed} m/s</li>
+      </ul>
+    </div>
+  `;
+
+  // Call the function to display both hourly and 5-day forecast
+  displayHourlyForecast(data);
+  displayFiveDayForecast(data);
+};
+
+const displayHourlyForecast = (data) => {
+  const hourlyForecastContainer = document.getElementById("hourly_forecast_container");
+  const currentDate = new Date();
+
+  // Filter the forecast data to show hours for the rest of the day
+  const hourlyData = data.list.filter(item => {
+    const forecastTime = new Date(item.dt * 1000);
+    return forecastTime.getDate() === currentDate.getDate() && forecastTime.getHours() > currentDate.getHours();
+  });
+
+  hourlyForecastContainer.innerHTML = `
+    <h3 class="text-center mb-4" style="color: #2c3e50; font-size: 1.8rem;">
+      Hourly Forecast for Today
+    </h3>
+    <div class="row justify-content-center">
+      ${hourlyData.map(item => {
+        const date = new Date(item.dt * 1000);
+        const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const temp = (item.main.temp - 273.15).toFixed(2);
+        const desc = item.weather[0].description;
+        const icon = item.weather[0].icon;
+
+        return `
+          <div class="col-md-2 text-center">
+            <div class="card weather-card forecast-card p-3">
+              <h5 class="text-uppercase">${time}</h5>
+              <img src="https://openweathermap.org/img/wn/${icon}.png" alt="weather icon" />
+              <h6>${temp}°C</h6>
+              <p class="font-italic">${desc}</p>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+};
+
+const displayFiveDayForecast = (data) => {
+  const fiveDayForecastContainer = document.getElementById("five_day_forecast_container");
+
+  // Group the forecast data by day (5 boxes, one per day)
+  const daysData = [];
+  for (let i = 0; i < 5; i++) {
+    const dayData = data.list[i * 8]; // Each day has 8 data points (every 3 hours)
+    const date = new Date(dayData.dt * 1000);
+    const day = date.toLocaleDateString();
+    const temp = (dayData.main.temp - 273.15).toFixed(2);
+    const desc = dayData.weather[0].description;
+    const icon = dayData.weather[0].icon;
+
+    daysData.push({
+      day: day,
+      temp: temp,
+      desc: desc,
+      icon: icon
+    });
+  }
+
+  // Display 5-day forecast
+  fiveDayForecastContainer.innerHTML = `
+    <h3 class="text-center mb-4" style="color: #2c3e50; font-size: 1.8rem;">
+      5-Day Forecast
+    </h3>
+    <div class="row justify-content-center">
+      ${daysData.map(dayData => {
+        return `
+          <div class="col-md-2 text-center">
+            <div class="card weather-card forecast-card p-3">
+              <h5 class="text-uppercase">${dayData.day}</h5>
+              <img src="https://openweathermap.org/img/wn/${dayData.icon}.png" alt="weather icon" />
+              <h6>${dayData.temp}°C</h6>
+              <p class="font-italic">${dayData.desc}</p>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+};
+
+  </script>
+</body>
+
+</html>
