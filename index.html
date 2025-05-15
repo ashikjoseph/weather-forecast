@@ -96,15 +96,15 @@
   }
 
   
-  .forecast-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px 15px;
-    margin-top: 30px;
-  }
+.forecast-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 30px;
+  /* Removed gap for fallback margin method */
+}
 
- .forecast-card {
+.forecast-card {
   flex: 1 1 150px;
   min-width: 130px;
   max-width: 160px;
@@ -115,9 +115,11 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease-in-out;
   text-align: center;
-  /* Remove margin-bottom */
-  /* margin-bottom: 15px; */
+  
+  /* Use margin to create space between cards */
+  margin: 10px;
 }
+
 
   .forecast-card:hover {
     transform: translateY(-5px);
