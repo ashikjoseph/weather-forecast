@@ -95,12 +95,12 @@
     }
   }
 
-  /* Forecast Cards */
+  
   .forecast-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
+    justify-content: center;
+    gap: 20px 15px;
     margin-top: 30px;
   }
 
@@ -115,6 +115,7 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease-in-out;
     text-align: center;
+    margin-bottom: 15px;
   }
 
   .forecast-card:hover {
@@ -139,7 +140,7 @@
     color: #f0f0f0;
   }
 
-  /* Responsive */
+
   @media (max-width: 992px) {
     .forecast-card {
       flex: 1 1 calc(33.33% - 20px);
@@ -226,10 +227,10 @@
         </button>
       </div>
 
-      <!-- Today's hourly forecast container -->
+    
 <div id="hourly_forecast_container" class="mt-4"></div>
 
-<!-- 5-day forecast container -->
+
 <div id="five_day_forecast_container" class="mt-4"></div>
 
     </div>
@@ -283,7 +284,7 @@
       );
       if (response.ok) {
         const data = await response.json();
-        console.log("New weather data fetched", data); // <-- confirm refresh
+        console.log("New weather data fetched", data); //confirm refresh
         displayWeather(data);
         displayForecast(data);
       } else {
